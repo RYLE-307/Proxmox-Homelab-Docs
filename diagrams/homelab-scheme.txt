@@ -1,0 +1,70 @@
+Proxmox Homelab — Logical Scheme
+================================
+
+                        Remote administrator
+                                 |
+                          authenticated VPN
+                                 |
+                    +--------------------------+
+                    | Home gateway             |
+                    | 192.168.2.1              |
+                    +-------------+------------+
+                                  |
+Local administrator -------------+---------------- LAN 192.168.2.0/24
+                                  |
+                    +-------------v------------+
+                    | Realtek 1 GbE             |
+                    | enp7s0                    |
+                    +-------------+------------+
+                                  |
+                    +-------------v------------+
+                    | Proxmox bridge: vmbr0     |
+                    +-------------+------------+
+                                  |
+             +--------------------v--------------------+
+             | Proxmox VE host: pve                    |
+             | 192.168.2.200/24                        |
+             | Debian 13 / Proxmox VE 9.2.0            |
+             | Xeon E5-2670 v2 / 64 GB ECC RAM         |
+             +----------+-------------------+-----------+
+                        |                   |
+          +-------------v------+   +--------v----------------+
+          | KVM virtual machines|   | LXC containers          |
+          +---------------------+   +-------------------------+
+          | 204 Ubuntu          |   | 201 zabbix              |
+          | 301 dc01            |   | 202 web-proxy           |
+          | 302 dc02            |   | 203 database            |
+          | 304 win10           |   | 205 nocoDB              |
+          | 305 win11           |   | 206 Dashboard           |
+          | 306 UbuntAD         |   | 801 exam [stopped]      |
+          | 307 dc04            |   +-------------------------+
+          | 400 vpn             |
+          | 500 3X-UI-MAIN      |
+          | 800 VM 800 [stopped]|
+          +----------+----------+
+                     |
+          +----------v-----------------------------------------+
+          | Storage                                            |
+          +-----------------------------------------------------+
+          | Samsung SSD 860 EVO 250GB                           |
+          |   Proxmox system / local / local-lvm                |
+          | HGST HUS728T8TALE6L4 8TB                            |
+          |   /mnt/storage / hdd-storage                        |
+          | WDC WD20NMVW-11AV3S2 2TB                            |
+          |   /mnt/backup / usb-backup                          |
+          +-----------------------------------------------------+
+
+Known local DNS names
+---------------------
+pve.lan      -> Proxmox host (192.168.2.200)
+zabbix.lan   -> monitoring
+site1.lan    -> local Nginx website
+site2.lan    -> local Nginx website
+site3.lan    -> local Nginx website
+files.lan    -> file services
+
+Security boundary
+-----------------
+Home services are intended for local-network or VPN access. No public IP,
+credential, private key, token, QR code, or full VPN configuration belongs
+in this public repository.
